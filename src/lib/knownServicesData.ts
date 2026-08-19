@@ -1,0 +1,433 @@
+import type { KnownService } from '../types';
+
+export const KNOWN_SERVICES: KnownService[] = [
+  {
+    id: 'srv-1',
+    slug: 'netflix',
+    name: 'Netflix',
+    domain: 'netflix.com',
+    aliases: ['netflix', 'netflix.com', 'nflx'],
+    logo_url: 'https://assets.nflxext.com/us/ffe/siteui/common/icons/nficon2016.ico',
+    category: 'streaming',
+    default_cost: 15.49,
+    default_currency: 'USD',
+    default_billing_cycle: 'monthly',
+    cancellation_url: 'https://www.netflix.com/youraccount',
+    cancellation_steps: [
+      'Log into netflix.com and navigate to Account',
+      'Under Membership & Billing, click Cancel Membership',
+      'Click Finish Cancellation on the secondary confirmation page',
+      'Check your email for official cancellation receipt'
+    ],
+    cancellation_difficulty: 'easy',
+    requires_phone_call: false,
+    retention_tips: 'Netflix rarely offers discounts, but you can downgrade to the Standard with Ads tier ($6.99/mo) before cancelling completely.'
+  },
+  {
+    id: 'srv-2',
+    slug: 'spotify',
+    name: 'Spotify',
+    domain: 'spotify.com',
+    aliases: ['spotify', 'spotify.com'],
+    logo_url: 'https://open.spotifycdn.com/cdn/images/favicon.0f31d2ea.ico',
+    category: 'streaming',
+    default_cost: 11.99,
+    default_currency: 'USD',
+    default_billing_cycle: 'monthly',
+    cancellation_url: 'https://www.spotify.com/account/change-plan/',
+    cancellation_steps: [
+      'Go to spotify.com/account',
+      'Under Your Plan, click Change Plan',
+      'Scroll down to Spotify Free and click Cancel Premium',
+      'Confirm through 2 prompt screens until you see Premium Cancelled'
+    ],
+    cancellation_difficulty: 'medium',
+    requires_phone_call: false,
+    retention_tips: 'Spotify often offers 3 months for $9.99 when you attempt to cancel.'
+  },
+  {
+    id: 'srv-3',
+    slug: 'chatgpt-plus',
+    name: 'ChatGPT Plus (OpenAI)',
+    domain: 'openai.com',
+    aliases: ['chatgpt', 'openai', 'chatgpt plus', 'chat.openai.com'],
+    logo_url: 'https://oaistatic-cdn.azureedge.net/chatgpt/favicon.ico',
+    category: 'software',
+    default_cost: 20.00,
+    default_currency: 'USD',
+    default_billing_cycle: 'monthly',
+    cancellation_url: 'https://chatgpt.com/#settings/Subscription',
+    cancellation_steps: [
+      'Open ChatGPT and click your profile icon (bottom-left)',
+      'Select Settings -> My Plan -> Manage My Subscription',
+      'Click Cancel Subscription on the Stripe customer portal page',
+      'Confirm cancellation'
+    ],
+    cancellation_difficulty: 'easy',
+    requires_phone_call: false
+  },
+  {
+    id: 'srv-4',
+    slug: 'adobe-creative-cloud',
+    name: 'Adobe Creative Cloud',
+    domain: 'adobe.com',
+    aliases: ['adobe', 'creative cloud', 'photoshop', 'adobe.com'],
+    logo_url: 'https://www.adobe.com/favicon.ico',
+    category: 'software',
+    default_cost: 54.99,
+    default_currency: 'USD',
+    default_billing_cycle: 'monthly',
+    cancellation_url: 'https://account.adobe.com/plans',
+    cancellation_steps: [
+      'Log into account.adobe.com/plans',
+      'Click Manage Plan next to Creative Cloud',
+      'Click Cancel your plan',
+      'Bypass retention offer screens (Adobe will offer 60 days free or 50% discount)',
+      'Confirm cancellation (Watch out for early termination fees if on annual paid monthly plan)'
+    ],
+    cancellation_difficulty: 'hard',
+    requires_phone_call: false,
+    retention_tips: 'Adobe almost ALWAYS offers 2 to 3 months FREE or 50% off if you proceed 3 screens into the cancellation flow!'
+  },
+  {
+    id: 'srv-5',
+    slug: 'amazon-prime',
+    name: 'Amazon Prime',
+    domain: 'amazon.com',
+    aliases: ['amazon', 'prime', 'amazon prime'],
+    logo_url: 'https://www.amazon.com/favicon.ico',
+    category: 'streaming',
+    default_cost: 14.99,
+    default_currency: 'USD',
+    default_billing_cycle: 'monthly',
+    cancellation_url: 'https://www.amazon.com/mc/manage',
+    cancellation_steps: [
+      'Navigate to Amazon Account -> Prime Membership',
+      'Click Manage Membership -> End Membership',
+      'Click Cancel My Benefits on the retention screen',
+      'Click Continue to Cancel on screen 2',
+      'Click Cancel Membership on the final screen'
+    ],
+    cancellation_difficulty: 'medium',
+    requires_phone_call: false
+  },
+  {
+    id: 'srv-6',
+    slug: 'apple-one',
+    name: 'Apple Services (App Store)',
+    domain: 'apple.com',
+    aliases: ['apple', 'apple.com', 'icloud', 'apple music', 'apple tv'],
+    logo_url: 'https://www.apple.com/favicon.ico',
+    category: 'cloud',
+    default_cost: 19.95,
+    default_currency: 'USD',
+    default_billing_cycle: 'monthly',
+    cancellation_url: 'https://apps.apple.com/account/subscriptions',
+    cancellation_steps: [
+      'Click the link to open iOS App Store Subscriptions settings page directly',
+      'Or open iPhone Settings -> Tap your Apple ID -> Subscriptions',
+      'Tap the active subscription you want to cancel',
+      'Tap Cancel Subscription / Cancel Free Trial and confirm'
+    ],
+    cancellation_difficulty: 'easy',
+    requires_phone_call: false,
+    is_app_store: 'apple'
+  },
+  {
+    id: 'srv-7',
+    slug: 'google-one',
+    name: 'Google One / Play Subscriptions',
+    domain: 'google.com',
+    aliases: ['google', 'google one', 'google play', 'youtube premium'],
+    logo_url: 'https://www.google.com/favicon.ico',
+    category: 'cloud',
+    default_cost: 9.99,
+    default_currency: 'USD',
+    default_billing_cycle: 'monthly',
+    cancellation_url: 'https://play.google.com/store/account/subscriptions',
+    cancellation_steps: [
+      'Open Google Play Subscriptions directly in browser or app',
+      'Select the subscription you want to cancel',
+      'Click Cancel Subscription',
+      'Select a reason and tap Continue -> Cancel Subscription'
+    ],
+    cancellation_difficulty: 'easy',
+    requires_phone_call: false,
+    is_app_store: 'google'
+  },
+  {
+    id: 'srv-8',
+    slug: 'disney-plus',
+    name: 'Disney+',
+    domain: 'disneyplus.com',
+    aliases: ['disney', 'disney+', 'disneyplus'],
+    logo_url: 'https://static-assets.bamgrid.com/product/disneyplus/images/favicon.8ed.ico',
+    category: 'streaming',
+    default_cost: 13.99,
+    default_currency: 'USD',
+    default_billing_cycle: 'monthly',
+    cancellation_url: 'https://www.disneyplus.com/account/subscription',
+    cancellation_steps: [
+      'Go to disneyplus.com/account',
+      'Select your subscription under Billing Details',
+      'Click Cancel Subscription',
+      'Complete brief feedback survey and click Complete Cancellation'
+    ],
+    cancellation_difficulty: 'easy',
+    requires_phone_call: false
+  },
+  {
+    id: 'srv-9',
+    slug: 'hbo-max',
+    name: 'Max (HBO Max)',
+    domain: 'max.com',
+    aliases: ['hbo', 'max', 'hbo max', 'max.com'],
+    logo_url: 'https://www.max.com/favicon.ico',
+    category: 'streaming',
+    default_cost: 16.99,
+    default_currency: 'USD',
+    default_billing_cycle: 'monthly',
+    cancellation_url: 'https://auth.max.com/account/subscription',
+    cancellation_steps: [
+      'Log into max.com and click your profile Settings',
+      'Click Subscription -> Manage Subscription',
+      'Click Cancel Subscription',
+      'Confirm cancellation'
+    ],
+    cancellation_difficulty: 'medium',
+    requires_phone_call: false
+  },
+  {
+    id: 'srv-10',
+    slug: 'youtube-premium',
+    name: 'YouTube Premium',
+    domain: 'youtube.com',
+    aliases: ['youtube', 'youtube premium', 'yt premium'],
+    logo_url: 'https://www.youtube.com/s/desktop/f5af03f8/img/favicon.ico',
+    category: 'streaming',
+    default_cost: 13.99,
+    default_currency: 'USD',
+    default_billing_cycle: 'monthly',
+    cancellation_url: 'https://www.youtube.com/paid_memberships',
+    cancellation_steps: [
+      'Go to youtube.com/paid_memberships',
+      'Click Manage Membership next to Premium',
+      'Click Deactivate -> Continue to Cancel',
+      'Select cancellation reason and click Yes, Cancel'
+    ],
+    cancellation_difficulty: 'easy',
+    requires_phone_call: false
+  },
+  {
+    id: 'srv-11',
+    slug: 'planet-fitness',
+    name: 'Planet Fitness Gym',
+    domain: 'planetfitness.com',
+    aliases: ['planet fitness', 'gym', 'pf'],
+    logo_url: 'https://www.planetfitness.com/favicon.ico',
+    category: 'fitness',
+    default_cost: 24.99,
+    default_currency: 'USD',
+    default_billing_cycle: 'monthly',
+    cancellation_url: 'https://www.planetfitness.com/about-planet-fitness/customer-service',
+    cancellation_steps: [
+      'IMPORTANT: Planet Fitness does NOT allow online cancellation in most locations!',
+      'Option A: Visit your home club in person and request a cancellation form.',
+      'Option B: Send a certified written letter to your home club address including your name, address, phone, and PF ID number.',
+      'If you moved, call the club manager directly to request certified mail exemption.'
+    ],
+    cancellation_difficulty: 'hard',
+    requires_phone_call: true,
+    cancellation_phone: '1-844-880-7180'
+  },
+  {
+    id: 'srv-12',
+    slug: 'hellofresh',
+    name: 'HelloFresh Meal Kits',
+    domain: 'hellofresh.com',
+    aliases: ['hellofresh', 'hello fresh'],
+    logo_url: 'https://www.hellofresh.com/favicon.ico',
+    category: 'food',
+    default_cost: 65.00,
+    default_currency: 'USD',
+    default_billing_cycle: 'weekly',
+    cancellation_url: 'https://www.hellofresh.com/account/plan',
+    cancellation_steps: [
+      'Log into hellofresh.com -> Account Settings',
+      'Scroll to Plan Settings and click Cancel My Plan (bottom of page)',
+      'Click Cancel Anyway through 3 retention promo screens',
+      'Ensure you get a confirmation message before deadline day'
+    ],
+    cancellation_difficulty: 'medium',
+    requires_phone_call: false
+  },
+  {
+    id: 'srv-13',
+    slug: 'xbox-game-pass',
+    name: 'Xbox Game Pass / Ultimate',
+    domain: 'microsoft.com',
+    aliases: ['xbox', 'game pass', 'microsoft xbox'],
+    logo_url: 'https://www.xbox.com/favicon.ico',
+    category: 'gaming',
+    default_cost: 16.99,
+    default_currency: 'USD',
+    default_billing_cycle: 'monthly',
+    cancellation_url: 'https://account.microsoft.com/services',
+    cancellation_steps: [
+      'Log into account.microsoft.com/services',
+      'Locate Xbox Game Pass and click Manage',
+      'Click Turn off recurring billing or Cancel Subscription',
+      'Confirm cancellation'
+    ],
+    cancellation_difficulty: 'easy',
+    requires_phone_call: false
+  },
+  {
+    id: 'srv-14',
+    slug: 'nytimes',
+    name: 'The New York Times',
+    domain: 'nytimes.com',
+    aliases: ['nytimes', 'ny times', 'new york times'],
+    logo_url: 'https://www.nytimes.com/favicon.ico',
+    category: 'news',
+    default_cost: 4.00,
+    default_currency: 'USD',
+    default_billing_cycle: 'monthly',
+    cancellation_url: 'https://www.nytimes.com/subscription/cancel',
+    cancellation_steps: [
+      'Go to nytimes.com/subscription/cancel',
+      'If online chat cancel is available in your region, click Start Chat',
+      'If not available, call customer service or use live chat during business hours',
+      'State clearly: "I want to cancel my subscription immediately, no retention offers needed."'
+    ],
+    cancellation_difficulty: 'hard',
+    requires_phone_call: false,
+    cancellation_phone: '1-800-698-4637'
+  },
+  {
+    id: 'srv-15',
+    slug: 'duolingo-plus',
+    name: 'Duolingo Super / Max',
+    domain: 'duolingo.com',
+    aliases: ['duolingo', 'duolingo super', 'duolingo max'],
+    logo_url: 'https://www.duolingo.com/favicon.ico',
+    category: 'software',
+    default_cost: 12.99,
+    default_currency: 'USD',
+    default_billing_cycle: 'monthly',
+    cancellation_url: 'https://www.duolingo.com/settings/super',
+    cancellation_steps: [
+      'If purchased on Web: Go to duolingo.com/settings/super -> Cancel Subscription',
+      'If purchased on iPhone: Apple Settings -> Subscriptions -> Duolingo -> Cancel',
+      'If purchased on Android: Google Play -> Subscriptions -> Duolingo -> Cancel'
+    ],
+    cancellation_difficulty: 'easy',
+    requires_phone_call: false
+  },
+  {
+    id: 'srv-16',
+    slug: 'claude-pro',
+    name: 'Claude Pro (Anthropic)',
+    domain: 'anthropic.com',
+    aliases: ['claude', 'claude pro', 'anthropic'],
+    logo_url: 'https://claude.ai/favicon.ico',
+    category: 'software',
+    default_cost: 20.00,
+    default_currency: 'USD',
+    default_billing_cycle: 'monthly',
+    cancellation_url: 'https://claude.ai/settings/billing',
+    cancellation_steps: [
+      'Log into claude.ai and click your profile icon',
+      'Go to Settings -> Billing',
+      'Click Cancel Plan',
+      'Confirm cancellation on the Stripe billing portal'
+    ],
+    cancellation_difficulty: 'easy',
+    requires_phone_call: false
+  },
+  {
+    id: 'srv-17',
+    slug: 'midjourney',
+    name: 'Midjourney AI',
+    domain: 'midjourney.com',
+    aliases: ['midjourney', 'midjourney.com'],
+    logo_url: 'https://www.midjourney.com/favicon.ico',
+    category: 'software',
+    default_cost: 10.00,
+    default_currency: 'USD',
+    default_billing_cycle: 'monthly',
+    cancellation_url: 'https://www.midjourney.com/account',
+    cancellation_steps: [
+      'Go to midjourney.com/account or type /subscribe in Discord',
+      'Click Manage Sub -> Cancel Plan',
+      'Choose whether to cancel immediately or at end of billing cycle',
+      'Confirm cancellation'
+    ],
+    cancellation_difficulty: 'easy',
+    requires_phone_call: false
+  },
+  {
+    id: 'srv-18',
+    slug: 'playstation-plus',
+    name: 'PlayStation Plus',
+    domain: 'playstation.com',
+    aliases: ['playstation', 'ps plus', 'psn'],
+    logo_url: 'https://www.playstation.com/favicon.ico',
+    category: 'gaming',
+    default_cost: 79.99,
+    default_currency: 'USD',
+    default_billing_cycle: 'yearly',
+    cancellation_url: 'https://store.playstation.com/subscriptions',
+    cancellation_steps: [
+      'Log into store.playstation.com -> Account Settings',
+      'Select Subscription Management',
+      'Click Turn Off Auto-Renew next to PlayStation Plus',
+      'Confirm prompt'
+    ],
+    cancellation_difficulty: 'medium',
+    requires_phone_call: false
+  },
+  {
+    id: 'srv-19',
+    slug: 'wsj',
+    name: 'The Wall Street Journal',
+    domain: 'wsj.com',
+    aliases: ['wsj', 'wall street journal'],
+    logo_url: 'https://www.wsj.com/favicon.ico',
+    category: 'news',
+    default_cost: 38.99,
+    default_currency: 'USD',
+    default_billing_cycle: 'monthly',
+    cancellation_url: 'https://customercenter.wsj.com/',
+    cancellation_steps: [
+      'Log into customercenter.wsj.com',
+      'Click Cancel Subscription',
+      'If online chat prompt appears, request cancellation directly with live agent or phone customer support'
+    ],
+    cancellation_difficulty: 'hard',
+    requires_phone_call: true,
+    cancellation_phone: '1-800-568-7625'
+  },
+  {
+    id: 'srv-20',
+    slug: 'audible',
+    name: 'Audible (Amazon)',
+    domain: 'audible.com',
+    aliases: ['audible', 'audible.com'],
+    logo_url: 'https://www.audible.com/favicon.ico',
+    category: 'streaming',
+    default_cost: 14.95,
+    default_currency: 'USD',
+    default_billing_cycle: 'monthly',
+    cancellation_url: 'https://www.audible.com/account/overview',
+    cancellation_steps: [
+      'Log into audible.com on desktop browser',
+      'Under Account Details, click Cancel Membership',
+      'Select reason and proceed through retention screens (Audible often offers 1 free credit or 50% discount)',
+      'Confirm cancellation'
+    ],
+    cancellation_difficulty: 'medium',
+    requires_phone_call: false,
+    retention_tips: 'Audible almost ALWAYS gives you 1 free audio credit or 50% off for 3 months if you attempt cancellation.'
+  }
+];
