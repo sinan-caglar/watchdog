@@ -12,17 +12,18 @@ interface AuthModalProps {
   onLogin: (email: string) => void;
   onLogout: () => void;
   onPurgeAccount: () => void;
+  onExportData: () => void;
 }
 
 export const AuthModal: React.FC<AuthModalProps> = ({
   user,
-  subscriptions,
   currency,
   setCurrency,
   onClose,
   onLogin,
   onLogout,
-  onPurgeAccount
+  onPurgeAccount,
+  onExportData
 }) => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState(user?.email || '');
@@ -34,16 +35,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     if (!email) return;
     onLogin(email);
     onClose();
-  };
-
-  const handleExportData = () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(subscriptions, null, 2));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `watchdog_subscriptions_export_${new Date().toISOString().split('T')[0]}.json`);
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
   };
 
   return (
@@ -101,7 +92,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
               {/* Data Export Button */}
               <button
-                onClick={handleExportData}
+                onClick={onExportData}
                 className="w-full py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center justify-center space-x-2 transition-colors"
               >
                 <Download className="w-4 h-4" />
