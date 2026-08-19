@@ -19,6 +19,7 @@ export function App() {
     updateSubscription,
     deleteSubscription,
     cancelSubscription,
+    keepPriceHike,
     importBankTransactions
   } = useSubscriptions(user?.id || 'usr-demo-101', currency);
 
@@ -48,6 +49,7 @@ export function App() {
       onUpdateSubscription={updateSubscription}
       onDeleteSubscription={deleteSubscription}
       onCancelSubscription={cancelSubscription}
+      onKeepPriceHike={keepPriceHike}
       onImportBankTransactions={importBankTransactions}
       onLogin={login}
       onLogout={logout}

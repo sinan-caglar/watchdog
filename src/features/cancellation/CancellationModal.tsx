@@ -9,7 +9,7 @@ interface CancellationModalProps {
   subscription: Subscription | null;
   currency: string;
   onClose: () => void;
-  onConfirmCancelled: (subId: string, savedAmount: number) => void;
+  onConfirmCancelled: (subId: string, savedAmount: number, proofData?: { refNumber?: string; confirmEmail?: string; proofUrl?: string }) => void;
 }
 
 export const CancellationModal: React.FC<CancellationModalProps> = ({
@@ -19,6 +19,8 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
   onConfirmCancelled
 }) => {
   const [isDone, setIsDone] = useState(false);
+  const [refNumber, setRefNumber] = useState(subscription?.cancellation_ref_number || '');
+  const [confirmEmail, setConfirmEmail] = useState(subscription?.cancellation_confirm_email || '');
 
   if (!subscription) return null;
 
@@ -53,7 +55,10 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
     const estimatedSaved = subscription.cost * (subscription.billing_cycle === 'weekly' ? 52 : subscription.billing_cycle === 'yearly' ? 1 : 12);
     
     setTimeout(() => {
-      onConfirmCancelled(subscription.id, estimatedSaved);
+      onConfirmCancelled(subscription.id, estimatedSaved, {
+        refNumber,
+        confirmEmail
+      });
       onClose();
     }, 1500);
   };
@@ -180,6 +185,47 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
                   <p className="text-[11px]">{retentionTips}</p>
                 </div>
               )}
+
+              {/* Cancellation Proof Vault Section */}
+              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2.5">
+                <p className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                  <span>Cancellation Proof & Receipt (Optional)</span>
+                </p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  Protect yourself against wrongful post-cancellation charges (crucial for gyms & annual contracts)
+                </p>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-1">
+                      Confirmation Ref #
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. REF-984210"
+                      value={refNumber}
+                      onChange={(e) => setRefNumber(e.target.value)}
+                      aria-label="Cancellation confirmation reference number"
+                      className="w-full px-3 py-1.5 text-xs rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-1">
+                      Confirmation Sent To
+                    </label>
+                    <input
+                      type="email"
+                      placeholder="you@email.com"
+                      value={confirmEmail}
+                      onChange={(e) => setConfirmEmail(e.target.value)}
+                      aria-label="Confirmation email address"
+                      className="w-full px-3 py-1.5 text-xs rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400"
+                    />
+                  </div>
+                </div>
+              </div>
 
               {/* Direct Deep-Link Action Button */}
               <div className="pt-2">

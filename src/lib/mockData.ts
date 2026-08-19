@@ -36,8 +36,8 @@ export const INITIAL_SUBSCRIPTIONS: Subscription[] = [
     type: 'trial',
     status: 'trial',
     start_date: addDays(today, -28),
-    next_charge_date: addDays(today, 2), // Urgent! Converts in 2 days
-    trial_end_date: addDays(today, 2),
+    next_charge_date: addDays(today, 1), // Urgent! Converts tomorrow
+    trial_end_date: addDays(today, 1),
     payment_method_label: 'Visa •••• 4242',
     cancellation_url: KNOWN_SERVICES[1].cancellation_url,
     cancellation_steps: KNOWN_SERVICES[1].cancellation_steps,
@@ -54,13 +54,16 @@ export const INITIAL_SUBSCRIPTIONS: Subscription[] = [
     known_service_id: 'srv-1',
     name: 'Netflix Standard',
     category: 'streaming',
-    cost: 15.49,
+    cost: 17.49,
+    previous_cost: 15.49,
+    price_increased: true,
+    price_increase_percentage: 12.9,
     currency: 'USD',
     billing_cycle: 'monthly',
     type: 'paid',
     status: 'active',
     start_date: addDays(today, -120),
-    next_charge_date: addDays(today, 5), // Renews in 5 days
+    next_charge_date: addDays(today, 4), // Renews in 4 days
     payment_method_label: 'Mastercard •••• 8812',
     cancellation_url: KNOWN_SERVICES[0].cancellation_url,
     cancellation_steps: KNOWN_SERVICES[0].cancellation_steps,
@@ -84,7 +87,7 @@ export const INITIAL_SUBSCRIPTIONS: Subscription[] = [
     type: 'paid',
     status: 'active',
     start_date: addDays(today, -60),
-    next_charge_date: addDays(today, 18),
+    next_charge_date: addDays(today, 14),
     payment_method_label: 'Visa •••• 4242',
     cancellation_url: KNOWN_SERVICES[2].cancellation_url,
     cancellation_steps: KNOWN_SERVICES[2].cancellation_steps,
@@ -106,7 +109,7 @@ export const INITIAL_SUBSCRIPTIONS: Subscription[] = [
     type: 'paid',
     status: 'active',
     start_date: addDays(today, -300),
-    next_charge_date: addDays(today, 12),
+    next_charge_date: addDays(today, 10),
     payment_method_label: 'Amex •••• 1004',
     cancellation_url: KNOWN_SERVICES[3].cancellation_url,
     cancellation_steps: KNOWN_SERVICES[3].cancellation_steps,
@@ -152,11 +155,13 @@ export const INITIAL_SUBSCRIPTIONS: Subscription[] = [
     start_date: addDays(today, -90),
     next_charge_date: addDays(today, -10),
     cancelled_at: addDays(today, -10),
+    cancellation_ref_number: 'HF-CANCEL-882910',
+    cancellation_confirm_email: 'alex.demo@watchdog.app',
     saved_amount_estimate: 260.00, // 4 weeks saved!
     cancellation_url: KNOWN_SERVICES[11].cancellation_url,
     cancellation_steps: KNOWN_SERVICES[11].cancellation_steps,
     cancellation_difficulty: 'medium',
-    notes: 'Cancelled through app on June 10',
+    notes: 'Cancelled through app. Ref # HF-CANCEL-882910',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   }

@@ -3,7 +3,11 @@ import type { UserProfile, Subscription, NotificationItem } from '../types';
 import { Header } from '../features/layout/Header';
 import { MobileTabBar, type TabType } from '../features/layout/MobileTabBar';
 import { UrgentAlertsBanner } from '../features/notifications/UrgentAlertsBanner';
+import { PriceHikeAlertBanner } from '../features/notifications/PriceHikeAlertBanner';
 import { SummaryCards } from '../features/dashboard/SummaryCards';
+import { Upcoming30DaysCard } from '../features/dashboard/Upcoming30DaysCard';
+import { RenewalCalendar } from '../features/dashboard/RenewalCalendar';
+import { DuplicateAlertsBanner } from '../features/dashboard/DuplicateAlertsBanner';
 import { SpendingCharts } from '../features/dashboard/SpendingCharts';
 import { SubscriptionList } from '../features/subscriptions/SubscriptionList';
 import { SubscriptionFormModal } from '../features/subscriptions/SubscriptionFormModal';
@@ -12,6 +16,7 @@ import { BankCsvImportModal } from '../features/bank-import/BankCsvImportModal';
 import { NegotiationScriptsModal } from '../features/scripts/NegotiationScriptsModal';
 import { AuthModal } from '../features/auth/AuthModal';
 import { OnboardingFlow } from '../features/auth/OnboardingFlow';
+import { subscriptionService } from '../services/subscriptionService';
 import { getDaysUntil } from '../lib/utils';
 import { Plus, FileSpreadsheet, MessageSquareQuote } from 'lucide-react';
 
@@ -27,7 +32,8 @@ interface AppRoutesProps {
   onAddSubscription: (data: Partial<Subscription>) => void;
   onUpdateSubscription: (id: string, data: Partial<Subscription>) => void;
   onDeleteSubscription: (id: string) => void;
-  onCancelSubscription: (id: string, savedAmount: number) => void;
+  onCancelSubscription: (id: string, savedAmount: number, proofData?: { refNumber?: string; confirmEmail?: string; proofUrl?: string }) => void;
+  onKeepPriceHike: (id: string) => void;
   onImportBankTransactions: (toAdd: Partial<Subscription>[]) => void;
   onLogin: (email: string) => void;
   onLogout: () => void;
@@ -48,6 +54,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
   onUpdateSubscription,
   onDeleteSubscription,
   onCancelSubscription,
+  onKeepPriceHike,
   onImportBankTransactions,
   onLogin,
   onLogout,
@@ -70,6 +77,8 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
   const urgentTrialsCount = subscriptions.filter(
     s => (s.type === 'trial' || s.status === 'trial') && s.status !== 'cancelled' && getDaysUntil(s.next_charge_date) <= 3
   ).length;
+
+  const duplicates = subscriptionService.detectDuplicates(subscriptions);
 
   const handleSaveForm = (data: Partial<Subscription>) => {
     if (editingSub) {
@@ -113,6 +122,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setActiveTab('dashboard')}
+              aria-label="Switch to Dashboard & Analytics tab"
               className={`px-4 py-2 rounded-xl font-extrabold text-xs transition-all ${
                 activeTab === 'dashboard'
                   ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
@@ -123,6 +133,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
             </button>
             <button
               onClick={() => setActiveTab('subscriptions')}
+              aria-label="Switch to All Subscriptions tab"
               className={`px-4 py-2 rounded-xl font-extrabold text-xs transition-all ${
                 activeTab === 'subscriptions'
                   ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
@@ -136,6 +147,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setShowBankModal(true)}
+              aria-label="Open bank statement CSV import modal"
               className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center space-x-1.5 transition-colors"
             >
               <FileSpreadsheet className="w-4 h-4 text-indigo-500" />
@@ -143,6 +155,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
             </button>
             <button
               onClick={() => setShowScriptsModal(true)}
+              aria-label="Open phone negotiation scripts library"
               className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center space-x-1.5 transition-colors"
             >
               <MessageSquareQuote className="w-4 h-4 text-teal-500" />
@@ -150,6 +163,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
             </button>
             <button
               onClick={() => { setEditingSub(null); setShowFormModal(true); }}
+              aria-label="Open add new subscription modal"
               className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-md shadow-emerald-600/20 transition-all flex items-center space-x-1.5"
             >
               <Plus className="w-4 h-4 stroke-[3]" />
@@ -158,7 +172,22 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           </div>
         </div>
 
-        {/* Urgent Action Alerts */}
+        {/* Price Increase Alert Banner */}
+        <PriceHikeAlertBanner
+          subscriptions={subscriptions}
+          currency={currency}
+          onCancelClick={(sub) => { setCancellingSub(sub); setShowCancelModal(true); }}
+          onKeepClick={(sub) => onKeepPriceHike(sub.id)}
+          onNegotiateClick={() => setShowScriptsModal(true)}
+        />
+
+        {/* Duplicate Subscription Alert Banner */}
+        <DuplicateAlertsBanner
+          duplicates={duplicates}
+          onReviewDuplicate={(sub) => { setCancellingSub(sub); setShowCancelModal(true); }}
+        />
+
+        {/* Urgent Free Trial Alert Banner */}
         <UrgentAlertsBanner
           subscriptions={subscriptions}
           currency={currency}
@@ -168,6 +197,13 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
         {/* Tab 1: Dashboard View */}
         {(activeTab === 'dashboard' || activeTab === 'cancel_helper') && (
           <div className="space-y-6 animate-fade-in">
+            
+            {/* Upcoming 30 Days Hero Card */}
+            <Upcoming30DaysCard
+              subscriptions={subscriptions}
+              currency={currency}
+            />
+
             <SummaryCards
               subscriptions={subscriptions}
               currency={currency}
@@ -178,6 +214,13 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
               subscriptions={subscriptions}
               currency={currency}
               darkMode={darkMode}
+            />
+
+            {/* Renewal & Trial Calendar Timeline View */}
+            <RenewalCalendar
+              subscriptions={subscriptions}
+              currency={currency}
+              onCancelClick={(sub) => { setCancellingSub(sub); setShowCancelModal(true); }}
             />
 
             <div>
@@ -192,6 +235,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
                 </div>
                 <button
                   onClick={() => { setEditingSub(null); setShowFormModal(true); }}
+                  aria-label="Track new subscription"
                   className="px-3.5 py-1.5 rounded-xl bg-emerald-600 text-white font-bold text-xs hover:bg-emerald-500 transition-colors flex items-center space-x-1"
                 >
                   <Plus className="w-4 h-4" />

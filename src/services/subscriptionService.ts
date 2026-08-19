@@ -45,9 +45,33 @@ export const subscriptionService = {
       cancellation_steps: data.cancellation_steps,
       cancellation_difficulty: data.cancellation_difficulty,
       notes: data.notes,
+      cancellation_ref_number: data.cancellation_ref_number,
+      cancellation_proof_url: data.cancellation_proof_url,
+      cancellation_confirm_email: data.cancellation_confirm_email,
       saved_amount_estimate: 0,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     };
+  },
+
+  detectDuplicates(subscriptions: Subscription[]): { sub1: Subscription; sub2: Subscription }[] {
+    const active = subscriptions.filter(s => s.status !== 'cancelled');
+    const duplicates: { sub1: Subscription; sub2: Subscription }[] = [];
+
+    for (let i = 0; i < active.length; i++) {
+      for (let j = i + 1; j < active.length; j++) {
+        const name1 = active[i].name.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const name2 = active[j].name.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+        if (name1.includes(name2) || name2.includes(name1) || (active[i].known_service_id && active[i].known_service_id === active[j].known_service_id)) {
+          duplicates.push({ sub1: active[i], sub2: active[j] });
+        }
+      }
+    }
+    return duplicates;
+  },
+
+  detectPriceIncreases(subscriptions: Subscription[]): Subscription[] {
+    return subscriptions.filter(s => s.status !== 'cancelled' && Boolean(s.price_increased));
   }
 };

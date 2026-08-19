@@ -34,19 +34,30 @@ export function useSubscriptions(userId: string, currency: string) {
     }
   };
 
-  const cancelSubscription = (id: string, savedAmount: number) => {
+  const cancelSubscription = (
+    id: string, 
+    savedAmount: number, 
+    proofData?: { refNumber?: string; confirmEmail?: string; proofUrl?: string }
+  ) => {
     setSubscriptions(prev => prev.map(s => {
       if (s.id === id) {
         return {
           ...s,
           status: 'cancelled',
           cancelled_at: new Date().toISOString(),
-          saved_amount_estimate: savedAmount
+          saved_amount_estimate: savedAmount,
+          cancellation_ref_number: proofData?.refNumber || s.cancellation_ref_number,
+          cancellation_confirm_email: proofData?.confirmEmail || s.cancellation_confirm_email,
+          cancellation_proof_url: proofData?.proofUrl || s.cancellation_proof_url
         };
       }
       return s;
     }));
     setSavedMoney(prev => prev + savedAmount);
+  };
+
+  const keepPriceHike = (id: string) => {
+    setSubscriptions(prev => prev.map(s => s.id === id ? { ...s, price_increased: false } : s));
   };
 
   const importBankTransactions = (toAdd: Partial<Subscription>[]) => {
@@ -81,6 +92,7 @@ export function useSubscriptions(userId: string, currency: string) {
     updateSubscription,
     deleteSubscription,
     cancelSubscription,
+    keepPriceHike,
     importBankTransactions,
     setSubscriptions,
     setSavedMoney

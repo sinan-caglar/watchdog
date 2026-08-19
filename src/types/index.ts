@@ -66,6 +66,12 @@ export interface Subscription {
   last_confirmed_at?: string;
   cancelled_at?: string | null;
   saved_amount_estimate?: number;
+  cancellation_ref_number?: string;
+  cancellation_proof_url?: string;
+  cancellation_confirm_email?: string;
+  previous_cost?: number;
+  price_increased?: boolean;
+  price_increase_percentage?: number;
   created_at: string;
   updated_at: string;
 }

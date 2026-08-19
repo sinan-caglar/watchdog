@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, ShieldX, Edit3, Trash2, CreditCard, Sparkles } from 'lucide-react';
+import { Clock, ShieldX, Edit3, Trash2, CreditCard, Sparkles, TrendingUp, ShieldCheck } from 'lucide-react';
 import type { Subscription } from '../../types';
 import { formatCurrency, formatDate, getDaysUntil } from '../../lib/utils';
 
@@ -73,6 +73,11 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
                     Free Trial
                   </span>
                 )}
+                {sub.price_increased && !isCancelled && (
+                  <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-amber-500 text-white flex items-center gap-1">
+                    <TrendingUp className="w-3 h-3" /> +{sub.price_increase_percentage}% Hike
+                  </span>
+                )}
               </div>
 
               <h3 className="font-extrabold text-base sm:text-lg text-slate-900 dark:text-white mt-0.5 line-clamp-1">
@@ -109,6 +114,11 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
             <span className="text-xs text-slate-500 dark:text-slate-400 font-medium ml-1">
               / {sub.billing_cycle}
             </span>
+            {sub.price_increased && sub.previous_cost && (
+              <p className="text-[10px] text-amber-600 dark:text-amber-400 font-bold">
+                Increased from {formatCurrency(sub.previous_cost, sub.currency || currency)} (+{sub.price_increase_percentage}%)
+              </p>
+            )}
           </div>
 
           {/* Payment Method Badge */}
@@ -161,9 +171,17 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
             <span>Cancel Now & Save {formatCurrency(sub.cost, sub.currency || currency)}</span>
           </button>
         ) : (
-          <div className="flex items-center justify-center space-x-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 py-1">
-            <Sparkles className="w-4 h-4" />
-            <span>Saved {formatCurrency(sub.saved_amount_estimate || sub.cost * 12, currency)}!</span>
+          <div className="flex flex-col items-center justify-center space-y-1 text-center py-1">
+            <div className="flex items-center space-x-1 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+              <Sparkles className="w-4 h-4" />
+              <span>Saved {formatCurrency(sub.saved_amount_estimate || sub.cost * 12, currency)}!</span>
+            </div>
+            {sub.cancellation_ref_number && (
+              <div className="flex items-center space-x-1 text-[10px] text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">
+                <ShieldCheck className="w-3 h-3 text-emerald-500" />
+                <span>Proof Ref: {sub.cancellation_ref_number}</span>
+              </div>
+            )}
           </div>
         )}
       </div>
