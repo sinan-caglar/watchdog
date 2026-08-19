@@ -97,14 +97,18 @@ export function matchUrlToKnownService(input: string, knownServices: KnownServic
   return null;
 }
 
-export function parseBankCsv(csvText: string, knownServices: KnownService[]): Partial<BankImportTransaction>[] {
+export interface ParsedBankItem extends Partial<BankImportTransaction> {
+  occurrence_count: number;
+  is_known_service: boolean;
+}
+
+export function parseBankCsv(csvText: string, knownServices: KnownService[]): ParsedBankItem[] {
   const lines = csvText.split(/\r?\n/).filter(line => line.trim().length > 0);
   if (lines.length < 2) return [];
 
-  const results: Partial<BankImportTransaction>[] = [];
+  const rawEntries: { desc: string; amount: number; dateStr: string; normKey: string }[] = [];
   const header = lines[0].toLowerCase().split(',');
 
-  // Identify column indices
   let dateIdx = header.findIndex(h => h.includes('date') || h.includes('time'));
   let descIdx = header.findIndex(h => h.includes('description') || h.includes('merchant') || h.includes('payee') || h.includes('name') || h.includes('details'));
   let amountIdx = header.findIndex(h => h.includes('amount') || h.includes('total') || h.includes('debit') || h.includes('cost'));
@@ -126,16 +130,40 @@ export function parseBankCsv(csvText: string, knownServices: KnownService[]): Pa
     const amount = Math.abs(parseFloat(rawAmt.replace(/[^0-9.-]/g, '')));
     if (isNaN(amount) || amount === 0) continue;
 
-    const matchedService = matchUrlToKnownService(desc, knownServices);
+    const normKey = desc.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+    rawEntries.push({ desc, amount, dateStr, normKey });
+  }
 
-    results.push({
-      merchant_name: desc,
-      amount,
-      currency: 'USD',
-      transaction_date: dateStr || new Date().toISOString().split('T')[0],
-      suggested_service_slug: matchedService?.slug,
-      status: 'pending'
-    });
+  // Count occurrences per merchant
+  const counts: Record<string, number> = {};
+  rawEntries.forEach(e => {
+    counts[e.normKey] = (counts[e.normKey] || 0) + 1;
+  });
+
+  const results: ParsedBankItem[] = [];
+  const processedKeys = new Set<string>();
+
+  for (const entry of rawEntries) {
+    const matchedService = matchUrlToKnownService(entry.desc, knownServices);
+    const occurrence_count = counts[entry.normKey] || 1;
+    const is_known_service = Boolean(matchedService);
+
+    // Rule: Include if matched against known subscription service OR appears 2+ times
+    if (is_known_service || occurrence_count >= 2) {
+      if (!processedKeys.has(entry.normKey)) {
+        processedKeys.add(entry.normKey);
+        results.push({
+          merchant_name: matchedService ? matchedService.name : entry.desc,
+          amount: entry.amount,
+          currency: 'USD',
+          transaction_date: entry.dateStr || new Date().toISOString().split('T')[0],
+          suggested_service_slug: matchedService?.slug,
+          status: 'pending',
+          occurrence_count,
+          is_known_service
+        });
+      }
+    }
   }
 
   return results;

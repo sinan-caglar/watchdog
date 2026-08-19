@@ -101,6 +101,7 @@ export const SubscriptionFormModal: React.FC<SubscriptionFormModalProps> = ({
           </h2>
           <button
             onClick={onClose}
+            aria-label="Close subscription form modal"
             className="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             <X className="w-5 h-5" />
@@ -121,6 +122,7 @@ export const SubscriptionFormModal: React.FC<SubscriptionFormModalProps> = ({
                 <input
                   type="text"
                   placeholder="Paste URL (e.g. netflix.com or spotify.com)"
+                  aria-label="Quick-Match by Website URL or Service Name"
                   value={urlInput}
                   onChange={(e) => handleUrlMatch(e.target.value)}
                   className="w-full px-3 py-2 text-xs rounded-xl bg-white dark:bg-slate-900 border border-teal-300 dark:border-teal-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
@@ -139,6 +141,7 @@ export const SubscriptionFormModal: React.FC<SubscriptionFormModalProps> = ({
               type="text"
               required
               placeholder="e.g. Netflix, Spotify, ChatGPT Plus"
+              aria-label="Service Name"
               value={name}
               onChange={(e) => {
                 setName(e.target.value);

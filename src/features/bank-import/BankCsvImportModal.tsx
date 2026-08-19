@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { X, UploadCloud, FileSpreadsheet, CheckCircle2 } from 'lucide-react';
-import type { BankImportTransaction, Subscription } from '../../types';
+import { X, UploadCloud, FileSpreadsheet, CheckCircle2, Repeat, Sparkles } from 'lucide-react';
+import type { Subscription } from '../../types';
 import { KNOWN_SERVICES } from '../../lib/knownServicesData';
-import { parseBankCsv, formatCurrency } from '../../lib/utils';
+import { parseBankCsv, formatCurrency, type ParsedBankItem } from '../../lib/utils';
 
 interface BankCsvImportModalProps {
   currency: string;
@@ -16,7 +16,7 @@ export const BankCsvImportModal: React.FC<BankCsvImportModalProps> = ({
   onConfirmMatches
 }) => {
   const [dragActive, setDragActive] = useState(false);
-  const [transactions, setTransactions] = useState<Partial<BankImportTransaction>[]>([]);
+  const [transactions, setTransactions] = useState<ParsedBankItem[]>([]);
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
 
   const handleFileUpload = (file: File) => {
@@ -78,14 +78,15 @@ export const BankCsvImportModal: React.FC<BankCsvImportModalProps> = ({
         <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50">
           <div>
             <span className="px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-extrabold text-[10px] uppercase">
-              Phase 3 Tool
+              Smart Pattern Analysis
             </span>
             <h2 className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">
-              Bank Statement CSV Parser
+              Detected Subscriptions & Recurring Charges
             </h2>
           </div>
           <button
             onClick={onClose}
+            aria-label="Close bank CSV import modal"
             className="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             <X className="w-5 h-5" />
@@ -119,7 +120,7 @@ export const BankCsvImportModal: React.FC<BankCsvImportModalProps> = ({
                   Drag & Drop Bank CSV Statement
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
-                  Upload your exported bank CSV. We parse recurring payments locally in your browser — zero financial data sent to remote servers!
+                  Upload your bank CSV. Our smart algorithm matches known subscription services and identifies true 2+ recurring interval charges while filtering out one-off purchases (like Starbucks or single retail store items).
                 </p>
               </div>
 
@@ -145,10 +146,11 @@ export const BankCsvImportModal: React.FC<BankCsvImportModalProps> = ({
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                  Detected Recurring Transactions ({transactions.length})
+                  Detected Subscriptions & Recurring Charges ({transactions.length})
                 </h4>
                 <button
                   onClick={() => setTransactions([])}
+                  aria-label="Upload a different bank statement CSV file"
                   className="text-xs text-indigo-600 dark:text-indigo-400 font-bold hover:underline"
                 >
                   Upload Different File
@@ -175,8 +177,8 @@ export const BankCsvImportModal: React.FC<BankCsvImportModalProps> = ({
                           {isSelected && <CheckCircle2 className="w-3.5 h-3.5" />}
                         </div>
                         <div>
-                          <p className="font-extrabold text-xs text-slate-900 dark:text-white">
-                            {tx.merchant_name}
+                          <p className="font-extrabold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                            <span>{tx.merchant_name}</span>
                           </p>
                           <p className="text-[10px] text-slate-500 dark:text-slate-400">
                             {tx.transaction_date}
@@ -184,13 +186,22 @@ export const BankCsvImportModal: React.FC<BankCsvImportModalProps> = ({
                         </div>
                       </div>
 
-                      <div className="text-right">
+                      <div className="text-right flex flex-col items-end gap-1">
                         <p className="font-extrabold text-xs text-slate-900 dark:text-white">
                           {formatCurrency(tx.amount || 0, tx.currency || currency)}
                         </p>
-                        <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
-                          {tx.suggested_service_slug ? `Matched: ${tx.suggested_service_slug}` : 'Custom Merchant'}
-                        </span>
+                        <div className="flex items-center gap-1">
+                          {tx.is_known_service && (
+                            <span className="text-[9px] font-extrabold px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 flex items-center gap-0.5">
+                              <Sparkles className="w-2.5 h-2.5" /> Known Service
+                            </span>
+                          )}
+                          {tx.occurrence_count >= 2 && (
+                            <span className="text-[9px] font-extrabold px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 flex items-center gap-0.5">
+                              <Repeat className="w-2.5 h-2.5" /> Recurring ({tx.occurrence_count}x)
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   );
@@ -210,6 +221,7 @@ export const BankCsvImportModal: React.FC<BankCsvImportModalProps> = ({
             <button
               onClick={handleConfirmSelected}
               disabled={selectedIndices.length === 0}
+              aria-label="Confirm adding selected subscriptions to Watchdog"
               className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-extrabold text-xs shadow-lg transition-all"
             >
               Add Selected Subscriptions ({selectedIndices.length})

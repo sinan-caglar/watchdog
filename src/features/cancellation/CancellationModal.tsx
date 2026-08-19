@@ -91,6 +91,7 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
 
           <button
             onClick={onClose}
+            aria-label="Close cancellation guide modal"
             className="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             <X className="w-5 h-5" />
@@ -140,6 +141,7 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
                   {phone && (
                     <a
                       href={`tel:${phone}`}
+                      aria-label={`Call customer support for ${subscription.name} at ${phone}`}
                       className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-amber-600 text-white font-bold text-xs hover:bg-amber-700 transition-colors"
                     >
                       <Phone className="w-3.5 h-3.5" />
@@ -185,6 +187,7 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
                   href={cancelUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={`Open direct cancellation page for ${subscription.name}`}
                   className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-sm flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/20 transition-all active:scale-[0.98]"
                 >
                   <span>Open Direct Cancellation Page</span>

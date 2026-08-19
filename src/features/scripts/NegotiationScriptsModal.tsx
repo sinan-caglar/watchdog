@@ -34,6 +34,7 @@ export const NegotiationScriptsModal: React.FC<NegotiationScriptsModalProps> = (
           </div>
           <button
             onClick={onClose}
+            aria-label="Close retention scripts library modal"
             className="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             <X className="w-5 h-5" />
@@ -49,6 +50,7 @@ export const NegotiationScriptsModal: React.FC<NegotiationScriptsModalProps> = (
               <button
                 key={script.id}
                 onClick={() => setActiveId(script.id)}
+                aria-label={`View script: ${script.title}`}
                 className={`px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
                   activeId === script.id
                     ? 'bg-emerald-600 text-white shadow-md'
@@ -64,6 +66,7 @@ export const NegotiationScriptsModal: React.FC<NegotiationScriptsModalProps> = (
           <div className="rounded-2xl bg-slate-900 text-slate-100 p-5 space-y-3 font-mono text-xs relative">
             <button
               onClick={handleCopy}
+              aria-label="Copy negotiation script text to clipboard"
               className="absolute top-4 right-4 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-sans text-xs font-bold flex items-center space-x-1.5 transition-colors"
             >
               {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}

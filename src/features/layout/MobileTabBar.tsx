@@ -32,6 +32,7 @@ export const MobileTabBar: React.FC<MobileTabBarProps> = ({
             <button
               key={t.id}
               onClick={() => setActiveTab(t.id)}
+              aria-label={`Switch to ${t.label} view`}
               className={`relative flex flex-col items-center justify-center flex-1 h-full py-1 text-[11px] font-medium transition-all ${
                 isActive
                   ? 'text-emerald-600 dark:text-emerald-400 font-bold'
